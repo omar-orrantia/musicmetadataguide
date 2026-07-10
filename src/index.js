@@ -3,7 +3,7 @@
 /**
  * Music Metadata Guide - Main Application
  * Purpose: Empower independent artists with metadata management tools
- * Version: 0.1.0
+ * Version: 0.2.0
  */
 
 const fs = require('fs');
@@ -51,18 +51,36 @@ class ArtistProfile {
     console.log(`✓ ISWC registered: ${code}`);
   }
 
-  // Add streaming platform profile (FIXED)
+  // Add streaming platform profile
   addStreamingProfile(platform, profileId) {
-    const platformKey = platform.toLowerCase().replace(/\s+/g, '');
+    // Map common platform names to metadata keys
+    const platformMap = {
+      'spotify': 'spotify',
+      'apple': 'apple',
+      'apple music': 'apple',
+      'soundcloud': 'soundcloud',
+      'sound cloud': 'soundcloud',
+      'bandcamp': 'bandcamp',
+      'youtube': 'youtube',
+      'you tube': 'youtube',
+      'tidal': 'tidal',
+      'amazonmusic': 'amazonmusic',
+      'amazon music': 'amazonmusic',
+      'amazon': 'amazonmusic',
+      'tunecore': 'tunecore',
+      'tune core': 'tunecore'
+    };
+
+    const platformKey = platformMap[platform.toLowerCase().trim()];
     
-    if (this.metadata.hasOwnProperty(platformKey)) {
+    if (platformKey && this.metadata.hasOwnProperty(platformKey)) {
       this.metadata[platformKey] = profileId;
       this.metadata.lastUpdated = new Date();
       console.log(`✓ ${platform} profile linked: ${profileId}`);
       return true;
     } else {
       console.log(`⚠ Platform not recognized: ${platform}`);
-      console.log(`   Available platforms: Spotify, Apple, SoundCloud, Bandcamp, YouTube, TIDAL, AmazonMusic, TuneCore`);
+      console.log(`   Available: Spotify, Apple Music, YouTube, SoundCloud, Bandcamp, TIDAL, Amazon Music, TuneCore`);
       return false;
     }
   }
@@ -192,12 +210,15 @@ function main() {
   artist.registerIPI('00123456789');
   artist.registerISWC('T-345.246.317-1');
   
-  // Demo: Add streaming platforms (FIXED - now works correctly)
+  // Demo: Add streaming platforms (NOW FIXED!)
   artist.addStreamingProfile('Spotify', 'spotify:artist:1A2B3C4D5E6F');
   artist.addStreamingProfile('Apple', 'apple-music:artist:abc123');
+  artist.addStreamingProfile('Apple Music', 'apple-music:artist:abc123');
   artist.addStreamingProfile('YouTube', 'UCxxxxxxxxxxxxx');
   artist.addStreamingProfile('SoundCloud', 'soundcloud:user123');
   artist.addStreamingProfile('Bandcamp', 'https://artist.bandcamp.com');
+  artist.addStreamingProfile('TIDAL', 'tidal:artist:12345');
+  artist.addStreamingProfile('Amazon Music', 'amazon-music:artist:xyz');
   
   // Display profile
   artist.displaySummary();
